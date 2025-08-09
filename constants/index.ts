@@ -1,5 +1,5 @@
 export const subjects = [
-  "maths",
+  "math",
   "language",
   "science",
   "history",
@@ -9,7 +9,7 @@ export const subjects = [
 
 export const subjectsColors = {
   science: "#E5D0FF",
-  maths: "#FFDA6E",
+  math: "#FFDA6E",
   language: "#BDE7FF",
   coding: "#FFC8E4",
   history: "#FFECC8",
@@ -32,7 +32,7 @@ export const recentSessions = [
   },
   {
     id: "2",
-    subject: "maths",
+    subject: "math",
     name: "Countsy the Number Wizard",
     topic: "Derivatives & Integrals",
     duration: 30,
