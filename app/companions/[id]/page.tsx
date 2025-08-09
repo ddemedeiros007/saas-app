@@ -32,7 +32,7 @@ const CompanionSession = async({ params}: CompanionSessionPageProps) => {
             <main>
                 <article className="flex rounded-border justify-between p-6 max-md:flex-col">
                     <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-2">
+
                             <div className="size-[72px] flex items-center justify-center rounded-lg max-mid:hidden"
                                  style={{backgroundColor: getSubjectColor(companion.subject)}}>
                                 <Image src={`/icons/${companion.subject}.svg`} alt={companion.subject} width={35} height={35} />
@@ -45,15 +45,14 @@ const CompanionSession = async({ params}: CompanionSessionPageProps) => {
                                     <div className="subject-badge max-sm:hidden">
                                         {companion.subject}
                                     </div>
+                                </div>
                                     <p className="text-lg">{companion.topic}</p>
                                 </div>
                             </div>
-                            <div className="items-start text-2xl max-mid:hidden">
+                            <div className="items-start text-2xl max-md:hidden">
                                 {companion.duration} minutes
                             </div>
-                        </div>
 
-                    </div>
                 </article>
                 <CompanionComponent
                     {...companion}
