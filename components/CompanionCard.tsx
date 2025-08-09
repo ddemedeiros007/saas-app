@@ -12,7 +12,7 @@ interface CompanionCardProps {
 }
 
 const CompanionCard = ({ id, name, topic, subject, duration, color}:
-CompanionCardProps) => {
+                       CompanionCardProps) => {
     return (
         <article className="companion-card" style={{backgroundColor: color}}>
             <div className="flex justify-between items-center">
@@ -32,7 +32,7 @@ CompanionCardProps) => {
                 />
                 <p className="texsm">{duration} minutes</p>
             </div>
-            <Link href={'/companions/${id}'} className="w-full">
+            <Link href={`/companions/${id}`} className="w-full">
                 <button className="btn-primary w-full justify-center">
                     Launch Lesson
                 </button>
