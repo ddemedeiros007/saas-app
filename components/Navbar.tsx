@@ -1,22 +1,14 @@
-// This file is likely app/_components/Navbar.tsx
-'use client'; // This is needed for using hooks in a component
-import React from 'react';
-import Link from 'next/link';
+// Update your existing file: components/Navbar.tsx
+'use client'; // Keep this line as we are still using a client component
+
+import React from 'react'
+import Link from "next/link";
 import Image from 'next/image';
-import { useAuth, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
-import NavItems from "@/components/NavItems";
+import NavItems from "@/components/NavItems"
+import AuthButtons from "@/components/AuthButtons" // Import the new component
 
 const Navbar = () => {
-    // We get the isLoaded boolean from the useAuth hook.
-    // This tells us if Clerk has finished loading the authentication state.
-    const { isLoaded } = useAuth();
-
-    // If Clerk has not finished loading, we render nothing (or a loading spinner).
-    // This prevents the 'SignedOut' content from flashing before the user is confirmed as signed in.
-    if (!isLoaded) {
-        return null; // Or return a loading spinner component
-    }
-
+    // We no longer need the useAuth hook here, as it's in AuthButtons.
     return (
         <nav className="navbar">
             <Link href="/">
@@ -26,16 +18,8 @@ const Navbar = () => {
             </Link>
             <div className="flex items-center gap-8">
                 <NavItems />
-                {/* The rest of the code is unchanged, but now it will only render
-                    once the authentication state is fully loaded. */}
-                <SignedOut>
-                    <SignInButton>
-                        <button className="btn-signin">Sign In</button>
-                    </SignInButton>
-                </SignedOut>
-                <SignedIn>
-                    <UserButton afterSignOutUrl="/"/>
-                </SignedIn>
+                {/* Now we just render the new AuthButtons component here */}
+                <AuthButtons />
             </div>
         </nav>
     )
