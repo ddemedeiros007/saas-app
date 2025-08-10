@@ -87,6 +87,17 @@ export const getRecentSessions = async (limit = 10) => {
 
     if(error) throw new Error(error.message);
 
-    return data.map(({companions}) => companions);
-}
+    // We'll filter out companions with duplicate IDs to fix the key error at the source.
+    const uniqueCompanions = [];
+    const seenIds = new Set();
 
+    data.forEach(session => {
+        const companion = session.companions;
+        if(companion && !seenIds.has(companion.id)) {
+            seenIds.add(companion.id);
+            uniqueCompanions.push(companion);
+        }
+    });
+
+    return uniqueCompanions;
+}

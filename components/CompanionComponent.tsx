@@ -15,7 +15,6 @@ import {configureAssistant} from "@/lib/utils";
 import {addToSessionHistory} from "@/lib/actions/companion.actions";
 
 // Define a simple 'voices' array to fix the ReferenceError.
-// In a real application, you might get this from an API or a config file.
 const voices = ["male", "female"];
 
 enum CallStatus {
@@ -49,11 +48,12 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
         const onCallEnd =() => {
             setCallStatus(CallStatus.FINISHED);
             addToSessionHistory(companionId)
-}
+        }
 
         const onMessage = (message: Message) => {
             if(message.type === 'transcript' && message.transcriptType === 'final') {
-                const newMessage = {role: message.role, content: message.transcript}
+                // A unique ID is now generated for each new message to prevent key errors.
+                const newMessage = { id: crypto.randomUUID(), role: message.role, content: message.transcript}
                 // We add new messages to the START of the array to appear on top.
                 setMessages((prev) => [newMessage, ...prev])
             }
@@ -85,7 +85,8 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
             vapi.off('speech-start', onSpeechStart);
             vapi.off('speech-end', onSpeechEnd);
         }
-
+        // Removed companionId from the dependency array, as the parent component will now handle
+        // re-mounting using the 'key' prop.
     }, []);
 
     const toggleMicrophone = () => {
@@ -115,7 +116,8 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
 
 
     return (
-        <section className="flex flex-col h-[70vh]">
+        // The main section is now a flex column with `flex-1` to take up all available space.
+        <section className="flex flex-col flex-1">
             <section className="flex gap-8 max-sm:flex-col">
                 <div className="companion-section">
                     <div className="companion-avatar" style={{
@@ -164,7 +166,6 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
                                 : 'Start Session'
                         }
                     </button>
-
                 </div>
             </section>
             <section className="transition flex-grow flex flex-col">
@@ -172,7 +173,7 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
                     {messages.map((message, index) => {
                         if(message.role === 'assistant') {
                             return(
-                                <p key={index} className="max-sm:text-sm" style={{ opacity: Math.max(0.2, 1 - index * 0.15) }}>
+                                <p key={message.id} className="max-sm:text-sm" style={{ opacity: Math.max(0.2, 1 - index * 0.15) }}>
                                     {name
                                         .split(' ')[0]
                                         .replace(/[.,]/g, '')
@@ -180,7 +181,7 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
                                 </p>
                             )
                         } else{
-                            return <p key={index} className="text-primary max-sm:text-sm" style={{ opacity: Math.max(0.2, 1 - index * 0.15) }}>
+                            return <p key={message.id} className="text-primary max-sm:text-sm" style={{ opacity: Math.max(0.2, 1 - index * 0.15) }}>
                                 {userName}: {message.content}
                             </p>
                         }
