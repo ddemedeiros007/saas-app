@@ -1,5 +1,5 @@
 // app/ClerkClientProvider.tsx
-'use client'; // This must be a client component
+'use client';
 
 import React from 'react';
 import { ClerkProvider } from '@clerk/nextjs';
