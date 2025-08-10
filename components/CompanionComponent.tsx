@@ -102,6 +102,7 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
             variableValues : {
                 subject, topic, style
             },
+            // This is the key change. We are now explicitly telling Vapi to receive client messages.
             clientMessages: ['transcript'],
             serverMessages: [],
         }

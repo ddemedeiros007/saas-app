@@ -74,7 +74,17 @@ export const getUserSessions = async (userId: string, limit=10) => {
 
     if(error) throw new Error(error.message);
 
-    return data.map(({companions}) => companions);
+    const uniqueCompanions = [];
+    const seenIds = new Set();
+    data.forEach(session => {
+        const companion = session.companions;
+        if(companion && !seenIds.has(companion.id)) {
+            seenIds.add(companion.id);
+            uniqueCompanions.push(companion);
+        }
+    });
+
+    return uniqueCompanions;
 }
 
 export const getRecentSessions = async (limit = 10) => {
@@ -99,5 +109,30 @@ export const getRecentSessions = async (limit = 10) => {
         }
     });
 
+    return uniqueCompanions;
+}
+
+
+export const getUserCompanions = async (userId: string) => {
+    const supabase = createSupabaseClient();
+    const {data, error} = await supabase
+        .from('companions')
+        .select()
+        .eq('author', userId)
+
+    if(error) throw new Error(error.message);
+
+    // Filter out companions with duplicate IDs to fix the key error at the source.
+    const uniqueCompanions = [];
+    const seenIds = new Set();
+
+    data.forEach(companion => {
+        if(companion && !seenIds.has(companion.id)) {
+            seenIds.add(companion.id);
+            uniqueCompanions.push(companion);
+        }
+    });
+
+    // Return the filtered array instead of the original one.
     return uniqueCompanions;
 }
