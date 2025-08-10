@@ -1,3 +1,4 @@
+// app/companions/[id]/page.tsx
 import React from 'react'
 import { getCompanion } from "@/lib/actions/companion.actions";
 import { currentUser } from "@clerk/nextjs/server";
@@ -5,6 +6,9 @@ import { redirect } from "next/navigation";
 import { getSubjectColor } from "@/lib/utils";
 import Image from 'next/image';
 import CompanionComponent from "@/components/CompanionComponent";
+
+// This line tells Next.js to not statically render this page
+export const dynamic = 'force-dynamic';
 
 interface CompanionSessionPageProps {
     params: Promise<{ id: string }>;
