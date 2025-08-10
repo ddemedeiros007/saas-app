@@ -1,5 +1,5 @@
 // Update your existing file: components/Navbar.tsx
-'use client'; // Keep this line as we are still using a client component
+'use client';
 
 import React from 'react'
 import Link from "next/link";
