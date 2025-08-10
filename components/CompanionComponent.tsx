@@ -12,6 +12,7 @@ import {useRef} from "react";
 import {LottieRefCurrentProps} from "lottie-react";
 import soundwaves from '@/constants/soundwaves.json';
 import {configureAssistant} from "@/lib/utils";
+import {addToSessionHistory} from "@/lib/actions/companion.actions";
 
 // Define a simple 'voices' array to fix the ReferenceError.
 // In a real application, you might get this from an API or a config file.
@@ -45,22 +46,27 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
 
     useEffect(() => {
         const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
-        const onCallEnd =() => setCallStatus(CallStatus.FINISHED);
-
+        const onCallEnd =() => {
+            setCallStatus(CallStatus.FINISHED);
+            addToSessionHistory(companionId)
+}
 
         const onMessage = (message: Message) => {
-            // FIX: Corrected the typo from 'trascript' to 'transcript' and 'tracriptType' to 'transcriptType'.
-            // This is the main reason why messages were not being rendered.
             if(message.type === 'transcript' && message.transcriptType === 'final') {
                 const newMessage = {role: message.role, content: message.transcript}
-                // We add new messages to the beginning of the array so they show up at the top
+                // We add new messages to the START of the array to appear on top.
                 setMessages((prev) => [newMessage, ...prev])
             }
         }
 
+        const onSpeechStart = () => {
+            setIsSpeaking(true);
+        };
 
-        const onSpeechStart = () => setIsSpeaking(true);
-        const onSpeechEnd = () => setIsSpeaking(false);
+        const onSpeechEnd = () => {
+            setIsSpeaking(false);
+        };
+
         const onError = (error: Error) => console.log('Error', error);
 
         vapi.on('call-start', onCallStart);
@@ -69,6 +75,7 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
         vapi.on('error', onError);
         vapi.on('speech-start', onSpeechStart);
         vapi.on('speech-end', onSpeechEnd);
+        // Removed onSpeechUpdate, as requested.
 
         return () => {
             vapi.off('call-start', onCallStart);
@@ -160,12 +167,12 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
 
                 </div>
             </section>
-            <section className="transition flex-1">
-                <div className="transcript-message no-scrollbar relative h-full">
+            <section className="transition flex-grow flex flex-col">
+                <div className="transcript-message no-scrollbar relative flex-grow overflow-y-auto">
                     {messages.map((message, index) => {
                         if(message.role === 'assistant') {
                             return(
-                                <p key={index} className="max-sm:text-sm">
+                                <p key={index} className="max-sm:text-sm" style={{ opacity: Math.max(0.2, 1 - index * 0.15) }}>
                                     {name
                                         .split(' ')[0]
                                         .replace(/[.,]/g, '')
@@ -173,16 +180,15 @@ const CompanionComponent = ({ companionId, subject, topic, name, userName, userI
                                 </p>
                             )
                         } else{
-                            return <p key={index} className="text-primary max-sm:text-sm">
+                            return <p key={index} className="text-primary max-sm:text-sm" style={{ opacity: Math.max(0.2, 1 - index * 0.15) }}>
                                 {userName}: {message.content}
                             </p>
                         }
                     })}
-                    <div className="transcript-fade"  />
+                    <div className="transcript-fade absolute bottom-0 left-0 w-full h-1/4 bg-gradient-to-t from-white to-transparent" />
                 </div>
             </section>
         </section>
     )
 }
 export default CompanionComponent
-
