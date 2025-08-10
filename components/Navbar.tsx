@@ -1,10 +1,22 @@
-import React from 'react'
-import Link from "next/link";
+// This file is likely app/_components/Navbar.tsx
+'use client'; // This is needed for using hooks in a component
+import React from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import NavItems from "@/components/NavItems"
+import { useAuth, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import NavItems from "@/components/NavItems";
 
 const Navbar = () => {
+    // We get the isLoaded boolean from the useAuth hook.
+    // This tells us if Clerk has finished loading the authentication state.
+    const { isLoaded } = useAuth();
+
+    // If Clerk has not finished loading, we render nothing (or a loading spinner).
+    // This prevents the 'SignedOut' content from flashing before the user is confirmed as signed in.
+    if (!isLoaded) {
+        return null; // Or return a loading spinner component
+    }
+
     return (
         <nav className="navbar">
             <Link href="/">
@@ -14,10 +26,12 @@ const Navbar = () => {
             </Link>
             <div className="flex items-center gap-8">
                 <NavItems />
+                {/* The rest of the code is unchanged, but now it will only render
+                    once the authentication state is fully loaded. */}
                 <SignedOut>
-                       <SignInButton>
-                           <button className="btn-signin">Sign In</button>
-                       </SignInButton>
+                    <SignInButton>
+                        <button className="btn-signin">Sign In</button>
+                    </SignInButton>
                 </SignedOut>
                 <SignedIn>
                     <UserButton afterSignOutUrl="/"/>
@@ -26,4 +40,4 @@ const Navbar = () => {
         </nav>
     )
 }
-export default Navbar
+export default Navbar;
