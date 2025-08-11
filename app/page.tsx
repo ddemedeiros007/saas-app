@@ -1,3 +1,4 @@
+// app/page.tsx
 import React from 'react'
 import CompanionCard from "@/components/CompanionCard";
 import CompanionsList from "@/components/CompanionsList";
@@ -6,11 +7,10 @@ import { getAllCompanions } from "@/lib/actions/companion.actions";
 import { getRecentSessions } from "@/lib/actions/companion.actions";
 import { getSubjectColor } from "@/lib/utils";
 
+export const dynamic = 'force-dynamic';
 
 const HomePage = async () => {
     const companions = await getAllCompanions({ limit: 3 });
-    // The getRecentSessions function now returns unique sessions,
-    // so we can use the data directly without a separate filtering step.
     const recentSessionsCompanions = await getRecentSessions({ limit: 10});
 
     return (
@@ -37,4 +37,4 @@ const HomePage = async () => {
     )
 }
 
-export default HomePage
+export default HomePage;
